@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs'
-import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators'
+import { debounceTime, distinctUntilChanged, map, mergeMap, switchMap } from 'rxjs/operators'
 import { ajax } from 'rxjs/ajax'
 
 const url = 'https://api.github.com/search/users?q=';
@@ -13,7 +13,8 @@ const stream$ = fromEvent(search, 'input').pipe(
     switchMap(
         v => ajax.getJSON(url + v)
     ),
-    map(response => response.items)
+    map(response => response.items),
+    mergeMap((items)=>items)
 )
 
 stream$.subscribe(v=>console.log(v));
